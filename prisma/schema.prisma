@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ServiceType {
+  CONSULTATIONS
+  EXAMS
+  MEDICAL_RECORDS
+  TELEMEDICINE
+}
+
+enum ProfessionalType {
+  DOCTORS
+  NURSES
+  TECHNICIANS
+  DIARIES
+  PRESCRIPTIONS
+}
+
+model Patient {
+  id             String        @id @default(uuid())
+  name           String
+  cpf            String        @unique
+  password       String
+  hospitalUnitId String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  hospitalUnit   HospitalUnity @relation(fields: [hospitalUnitId], references: [id])
+}
+
+model HospitalUnity {
+  id                  String               @id @default(uuid())
+  name                String
+  address             String
+  beds                Int
+  financialReport     Int
+  supplies            Int
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  patients            Patient[]
+  // healthProfessionals HealthProfessional[]
+  // services            Service[]
+}
+
+// model HealthProfessional {
+//   id                String       @id @default(uuid())
+//   name              String
+//   cpf               String       @unique
+//   password          String
+//   isAdmin           Boolean      @default(false)
+//   professionalType  ProfessionalType
+//   serviceType       ServiceType
+//   hospitalUnit      HospitalUnity     @relation(fields: [hospitalUnitId], references: [id])
+//   hospitalUnitId    String
+//   services          Service[]    @relation("HealthProfessionalServices")
+//   createdAt         DateTime     @default(now())
+//   updatedAt         DateTime     @updatedAt
+// }
+
+// model Service {
+//   id                   String             @id @default(uuid())
+//   serviceType          ServiceType
+//   description          String
+//   serviceDate          DateTime
+//   isServiceCompleted   Boolean            @default(false)
+//   hospitalUnit         HospitalUnity      @relation(fields: [hospitalUnitId], references: [id])
+//   hospitalUnitId       String
+//   healthProfessional   HealthProfessional @relation("HealthProfessionalServices", fields: [healthProfessionalId], references: [id])
+//   healthProfessionalId String
+//   createdAt            DateTime           @default(now())
+//   updatedAt            DateTime           @updatedAt
+// }
