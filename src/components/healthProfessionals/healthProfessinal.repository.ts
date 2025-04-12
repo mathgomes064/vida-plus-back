@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { UUID } from "crypto";
 import { PrismaService } from "src/infra/database/prisma/prisma.service";
 import { IHealthProfessionalRepository } from "./interfaces/healthProfessional.repository.interface";
-
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class HealthProfessionalRepository implements IHealthProfessionalRepository {
     constructor(private readonly prisma: PrismaService) { }
@@ -15,11 +15,13 @@ export class HealthProfessionalRepository implements IHealthProfessionalReposito
         const { name, cpf, password, isAdmin, hospitalUnitId, serviceType, professionalType } = data;
 
         try {
+            const hashedPassword = await bcrypt.hash(password, 10);
             return await this.prisma.healthProfessional.create({
                 data: {
                     name,
                     cpf,
-                    password,
+                    password: hashedPassword,
+                    confirmPassword: password,
                     isAdmin,
                     hospitalUnitId,
                     serviceType,
@@ -35,20 +37,25 @@ export class HealthProfessionalRepository implements IHealthProfessionalReposito
         const { name, cpf, password, isAdmin, hospitalUnitId, serviceType, professionalType } = data;
 
         try {
-            return await this.prisma.healthProfessional.update({
-                data: {
-                    name,
-                    cpf,
-                    password,
-                    isAdmin,
-                    hospitalUnitId,
-                    serviceType,
-                    professionalType
-                },
-                where: {
-                    id,
-                }
-            });
+            const updateData: any = {
+                name,
+                cpf,
+                isAdmin,
+                hospitalUnitId,
+                serviceType,
+                professionalType,
+              };
+          
+              if (password) {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                updateData.password = hashedPassword;
+                updateData.confirmPassword = password;
+              }
+          
+              return await this.prisma.healthProfessional.update({
+                data: updateData,
+                where: { id },
+              });
         } catch (error) {
             throw new Error(error);
         }

@@ -29,26 +29,27 @@ enum ProfessionalType {
 }
 
 model Patient {
-  id             String        @id @default(uuid())
-  name           String
-  cpf            String        @unique
-  password       String
-  hospitalUnitId String
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id              String   @id @default(uuid())
+  name            String
+  cpf             String   @unique
+  password        String
+  confirmPassword String?
+  hospitalUnitId  String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  hospitalUnit   HospitalUnity @relation(fields: [hospitalUnitId], references: [id])
+  hospitalUnit HospitalUnity @relation(fields: [hospitalUnitId], references: [id])
 }
 
 model HospitalUnity {
-  id                  String               @id @default(uuid())
-  name                String
-  address             String
-  beds                Int
-  financialReport     Int
-  supplies            Int
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
+  id              String   @id @default(uuid())
+  name            String
+  address         String
+  beds            Int
+  financialReport Int
+  supplies        Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   patients            Patient[]
   healthProfessionals HealthProfessional[]
@@ -56,32 +57,33 @@ model HospitalUnity {
 }
 
 model HealthProfessional {
-  id                String       @id @default(uuid())
-  name              String
-  cpf               String       @unique
-  password          String
-  isAdmin           Boolean      @default(false)
-  hospitalUnitId    String
-  serviceType       ServiceType
-  professionalType  ProfessionalType
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+  id               String           @id @default(uuid())
+  name             String
+  cpf              String           @unique
+  password         String
+  confirmPassword  String?
+  isAdmin          Boolean          @default(false)
+  hospitalUnitId   String
+  serviceType      ServiceType
+  professionalType ProfessionalType
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 
-  services          Service[]    @relation("HealthProfessionalServices")
-  hospitalUnit      HospitalUnity     @relation(fields: [hospitalUnitId], references: [id])
+  services     Service[]     @relation("HealthProfessionalServices")
+  hospitalUnit HospitalUnity @relation(fields: [hospitalUnitId], references: [id])
 }
 
 model Service {
-  id                   String             @id @default(uuid())
+  id                   String      @id @default(uuid())
   description          String
   serviceDate          DateTime
-  isServiceCompleted   Boolean            @default(false)
+  isServiceCompleted   Boolean     @default(false)
   hospitalUnitId       String
   healthProfessionalId String
   serviceType          ServiceType
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
 
-  hospitalUnit         HospitalUnity      @relation(fields: [hospitalUnitId], references: [id])
-  healthProfessional   HealthProfessional @relation("HealthProfessionalServices", fields: [healthProfessionalId], references: [id])
+  hospitalUnit       HospitalUnity      @relation(fields: [hospitalUnitId], references: [id])
+  healthProfessional HealthProfessional @relation("HealthProfessionalServices", fields: [healthProfessionalId], references: [id])
 }
