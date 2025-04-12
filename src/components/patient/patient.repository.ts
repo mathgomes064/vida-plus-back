@@ -3,7 +3,6 @@ import { UUID } from "crypto";
 import { PrismaService } from "src/infra/database/prisma/prisma.service";
 import { IPatientRepository } from "./interfaces/patient.repository.interface";
 import * as bcrypt from 'bcrypt';
-
 @Injectable()
 export class PatientRepository implements IPatientRepository {
     constructor(private readonly prisma: PrismaService) { }

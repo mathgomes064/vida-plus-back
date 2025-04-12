@@ -1,4 +1,3 @@
-// auth.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -32,7 +31,7 @@ export class AuthService {
     const payload = {
       sub: user.id,
       cpf: user.cpf,
-      userType: user.userType,
+      isAdmin: user.isAdmin,
     };
 
     return {

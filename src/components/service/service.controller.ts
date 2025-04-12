@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { UUID } from "crypto";
 import { ServiceService } from "./service.service";
-import { JwtAuthGuard } from "../auth/jwt.guard";
+import { JwtAuthGuard } from "../auth/login/jwt.guard";
 @Controller('service')
 export class ServiceController {
     constructor(private readonly service: ServiceService) {}

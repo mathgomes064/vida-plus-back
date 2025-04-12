@@ -7,6 +7,10 @@ export class HealthProfessionalService {
         @Inject('IHealthProfessionalRepository')
         private readonly repository: IHealthProfessionalRepository) { }
 
+    async generateFinancialReport(query: any): Promise<any> {
+        return await this.repository.generateFinancialReport(query);
+    }
+
     async findAllHealthProfessionals(query: any): Promise<any> {
         return await this.repository.findAllHealthProfessionals(query);
     }

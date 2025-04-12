@@ -1,10 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { UUID } from "crypto";
 import { HealthProfessionalService } from "./healthProfessinal.service";
+import { JwtAuthGuard } from "../auth/login/jwt.guard";
+import { IsAdminGuard } from "../auth/isAdmin/isAdmin.guard";
 
 @Controller('health-professional')
 export class HealthProfessionalController {
     constructor(private readonly service: HealthProfessionalService) {}
+
+    @UseGuards(JwtAuthGuard, IsAdminGuard)
+    @Get('/financial-report')
+    async generateFinancialReport(@Query() query: any): Promise<any> {
+        return await this.service.generateFinancialReport(query);
+    }
 
     @Get()
     async findAllHealthProfessionals(@Query() query: any): Promise<any> {

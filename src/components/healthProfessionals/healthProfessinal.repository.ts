@@ -5,7 +5,36 @@ import { IHealthProfessionalRepository } from "./interfaces/healthProfessional.r
 import * as bcrypt from 'bcrypt';
 @Injectable()
 export class HealthProfessionalRepository implements IHealthProfessionalRepository {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(private readonly prisma: PrismaService) {}
+
+    async generateFinancialReport(data: any): Promise<any> {
+        const { hospitalUnityId } = data;
+        try {
+            if (!hospitalUnityId) {
+                return `Unidade hospitalar não disponibilizada`;
+            }
+
+            const selectUnity = await this.prisma.hospitalUnity.findFirst({
+                where: {
+                    id: hospitalUnityId,
+                },
+            });
+
+            if (!selectUnity) {
+                return `Unidade hospitalar com ID ${hospitalUnityId} não encontrada.`;
+            }
+
+            return {
+                "Hospital": selectUnity.name,
+                "Leitos disponíveis": selectUnity.beds,
+                "Relatório financeiro": selectUnity.financialReport,
+                "Suprimentos restantes": selectUnity.supplies,
+            }
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
 
     async findAllHealthProfessionals(query: any): Promise<any> {
         return this.prisma.healthProfessional.findMany();
@@ -44,18 +73,18 @@ export class HealthProfessionalRepository implements IHealthProfessionalReposito
                 hospitalUnitId,
                 serviceType,
                 professionalType,
-              };
-          
-              if (password) {
+            };
+
+            if (password) {
                 const hashedPassword = await bcrypt.hash(password, 10);
                 updateData.password = hashedPassword;
                 updateData.confirmPassword = password;
-              }
-          
-              return await this.prisma.healthProfessional.update({
+            }
+
+            return await this.prisma.healthProfessional.update({
                 data: updateData,
                 where: { id },
-              });
+            });
         } catch (error) {
             throw new Error(error);
         }

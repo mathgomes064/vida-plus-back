@@ -3,8 +3,8 @@ import { HospitalUnityModule } from './components/hospitalUnity/hospitalUnity.mo
 import { HealthProfessionalModule } from './components/healthProfessionals/healthProfessinal.module';
 import { PatientModule } from './components/patient/patient.module';
 import { ServiceModule } from './components/service/service.module';
-import { AuthService } from './components/auth/auth.service';
-import { AuthModule } from './components/auth/auth.module';
+import { AuthService } from './components/auth/login/auth.service';
+import { AuthModule } from './components/auth/login/auth.module';
 
 @Module({
   imports: [

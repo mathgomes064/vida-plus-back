@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { UUID } from "crypto";
 import { PrismaService } from "src/infra/database/prisma/prisma.service";
 import { IServiceRepository } from "./interfaces/service.repository.interface";
+import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class ServiceRepository implements IServiceRepository {
@@ -11,23 +12,45 @@ export class ServiceRepository implements IServiceRepository {
         return this.prisma.service.findMany();
     }
 
-    async createService(data: any): Promise<any> {
-        const { description, serviceDate, hospitalUnitId, serviceType, healthProfessionalId } = data;
-
-        try {
-            return await this.prisma.service.create({
-                data: {
-                    description,
-                    serviceDate,
-                    hospitalUnitId,
-                    serviceType,
-                    healthProfessionalId
-                }
-            });
-        } catch (error) {
-            throw new Error(error);
+    async createService(data: any, priceForService: number, supplies: number): Promise<any> {
+      const { description, serviceDate, hospitalUnitId, serviceType, healthProfessionalId } = data;
+    
+      try {
+        const selectedUnity = await this.prisma.hospitalUnity.findFirst({
+          where: {
+            id: hospitalUnitId,
+          },
+        });
+    
+        if (!selectedUnity) {
+          throw new BadRequestException('Unidade hospitalar não encontrada');
         }
+    
+        await this.prisma.hospitalUnity.update({
+          data: {
+            beds: selectedUnity.beds - 1,
+            financialReport: selectedUnity.financialReport + priceForService,
+            supplies: selectedUnity.supplies - supplies,
+          },
+          where: {
+            id: selectedUnity.id,
+          },
+        });
+    
+        return await this.prisma.service.create({
+          data: {
+            description,
+            serviceDate,
+            hospitalUnitId,
+            serviceType,
+            healthProfessionalId,
+          },
+        });
+      } catch (error) {
+        throw new Error(error);
+      }
     }
+    
 
     async updateService(id: UUID, data: any): Promise<any> {
         const { description, serviceDate, hospitalUnitId, isServiceCompleted, serviceType, healthProfessionalId } = data;
