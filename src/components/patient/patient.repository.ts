@@ -8,7 +8,11 @@ export class PatientRepository implements IPatientRepository {
     constructor(private readonly prisma: PrismaService) { }
 
     async findAllPatients(query: any): Promise<any> {
-        return this.prisma.patient.findMany();
+        return this.prisma.patient.findMany({
+            include: {
+                services: true,
+            }
+        });
     }
 
     async createPatient(data: any): Promise<any> {

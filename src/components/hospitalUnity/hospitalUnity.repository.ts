@@ -8,7 +8,13 @@ export class HospitalUnityRepository implements IHospitalUnityRepository {
     constructor(private readonly prisma: PrismaService) { }
 
     async findAllHospitalUnities(query: any): Promise<any> {
-        return this.prisma.hospitalUnity.findMany();
+        return this.prisma.hospitalUnity.findMany({
+            include: {
+                patients: true,
+                healthProfessionals: true,
+                services: true
+            }
+        });
     }
 
     async createHospitalUnity(data: any): Promise<any> {

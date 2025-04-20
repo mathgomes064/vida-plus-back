@@ -9,11 +9,17 @@ export class ServiceRepository implements IServiceRepository {
     constructor(private readonly prisma: PrismaService) { }
 
     async findAllServices(query: any): Promise<any> {
-        return this.prisma.service.findMany();
+        return this.prisma.service.findMany({
+          include: {
+            patient: true,
+            hospitalUnit: true,
+            healthProfessional: true
+          }
+        });
     }
 
     async createService(data: any, priceForService: number, supplies: number): Promise<any> {
-      const { description, serviceDate, hospitalUnitId, serviceType, healthProfessionalId } = data;
+      const { description, serviceDate, hospitalUnitId, patientId, serviceType, healthProfessionalId } = data;
     
       try {
         const selectedUnity = await this.prisma.hospitalUnity.findFirst({
@@ -42,6 +48,7 @@ export class ServiceRepository implements IServiceRepository {
             description,
             serviceDate,
             hospitalUnitId,
+            patientId,
             serviceType,
             healthProfessionalId,
           },

@@ -39,6 +39,8 @@ model Patient {
   updatedAt       DateTime @updatedAt
 
   hospitalUnit HospitalUnity @relation(fields: [hospitalUnitId], references: [id])
+
+  services     Service[]
 }
 
 model HospitalUnity {
@@ -80,10 +82,12 @@ model Service {
   isServiceCompleted   Boolean     @default(false)
   hospitalUnitId       String
   healthProfessionalId String
+  patientId            String
   serviceType          ServiceType
   createdAt            DateTime    @default(now())
   updatedAt            DateTime    @updatedAt
 
   hospitalUnit       HospitalUnity      @relation(fields: [hospitalUnitId], references: [id])
   healthProfessional HealthProfessional @relation("HealthProfessionalServices", fields: [healthProfessionalId], references: [id])
+  patient            Patient            @relation(fields: [patientId], references: [id]) // <- nova relação
 }

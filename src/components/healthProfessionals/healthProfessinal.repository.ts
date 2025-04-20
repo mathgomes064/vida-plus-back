@@ -37,7 +37,11 @@ export class HealthProfessionalRepository implements IHealthProfessionalReposito
 
 
     async findAllHealthProfessionals(query: any): Promise<any> {
-        return this.prisma.healthProfessional.findMany();
+        return this.prisma.healthProfessional.findMany({
+            include: {
+                services: true,
+            }
+        });
     }
 
     async createHealthProfessional(data: any): Promise<any> {
