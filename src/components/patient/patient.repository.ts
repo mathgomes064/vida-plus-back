@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { UUID } from "crypto";
 import { PrismaService } from "src/infra/database/prisma/prisma.service";
 import { IPatientRepository } from "./interfaces/patient.repository.interface";
@@ -20,6 +20,14 @@ export class PatientRepository implements IPatientRepository {
 
         try {
             const hashedPassword = await bcrypt.hash(password, 10);
+
+            const existedCpf = await this.prisma.patient.findFirst({
+                where: {
+                    cpf: cpf
+                }
+            })
+
+            if (existedCpf) throw new BadRequestException('CPF Inválido');
             
             return await this.prisma.patient.create({
                 data: {

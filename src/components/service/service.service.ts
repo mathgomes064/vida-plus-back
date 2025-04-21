@@ -15,16 +15,16 @@ export class ServiceService {
         let prisceForService = 0;
         let supplies = 0;
 
-        if (data.service === "CONSULTATIONS"){
+        if (data.service === "CONSULTATIONS") {
             prisceForService = 100
             supplies = 10
-        }else if (data.service === "EXAMS"){
+        } else if (data.service === "EXAMS") {
             prisceForService = 200
             supplies = 20
-        }else if (data.service === "MEDICAL_RECORDS"){
+        } else if (data.service === "MEDICAL_RECORDS") {
             prisceForService = 150
             supplies = 15
-        }else if (data.service === "TELEMEDICINE"){
+        } else if (data.service === "TELEMEDICINE") {
             prisceForService = 50
             supplies = 0
         }
@@ -32,8 +32,8 @@ export class ServiceService {
         return await this.repository.createService(data, prisceForService, supplies);
     }
 
-    async updateService(id: UUID, data: any): Promise<any> {
-        return await this.repository.updateService(id, data);
+    async updateService(id: UUID, data: any, patientId: UUID): Promise<any> {
+        return await this.repository.updateService(id, data, patientId);
     }
 
     async deleteService(id: UUID): Promise<any> {

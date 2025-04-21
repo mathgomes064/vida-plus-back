@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards } from "@nestjs/common";
 import { UUID } from "crypto";
 import { ServiceService } from "./service.service";
 import { JwtAuthGuard } from "../auth/login/jwt.guard";
 @Controller('service')
 export class ServiceController {
-    constructor(private readonly service: ServiceService) {}
+    constructor(private readonly service: ServiceService) { }
 
     @UseGuards(JwtAuthGuard)
     @Get()
@@ -20,8 +20,13 @@ export class ServiceController {
 
     @UseGuards(JwtAuthGuard)
     @Put(":id")
-    async updateService(@Param('id') id: UUID, @Body() data: any): Promise<any> {
-        return await this.service.updateService(id, data);
+    async updateService(
+        @Param('id') id: UUID,
+        @Body() data: any,
+        @Request() req
+    ): Promise<any> {
+        const patientId = req.user.userId;
+        return await this.service.updateService(id, data, patientId);
     }
 
     @UseGuards(JwtAuthGuard)
