@@ -17,6 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       cpf: payload.cpf,
       userType: payload.userType,
       isAdmin: payload.isAdmin || false,
+      professionalType: payload.professionalType,
     };
   }
 }

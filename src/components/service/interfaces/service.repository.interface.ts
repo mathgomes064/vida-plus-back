@@ -4,5 +4,5 @@ export interface IServiceRepository {
     findAllServices(query: any): Promise<any>;
     createService(data: any, prisceForService: number, supplies: number): Promise<any>;
     updateService(id: UUID, data: any, patientId: string): Promise<any>;
-    deleteService(id: UUID): Promise<any>;
+    deleteService(id: UUID, patientId: string): Promise<any>;
 }

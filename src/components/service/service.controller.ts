@@ -31,7 +31,11 @@ export class ServiceController {
 
     @UseGuards(JwtAuthGuard)
     @Delete(":id")
-    async deleteService(@Param('id') id: UUID): Promise<any> {
-        return await this.service.deleteService(id);
+    async deleteService(
+        @Param('id') id: UUID,
+        @Request() req
+    ): Promise<any> {
+        const patientId = req.user.userId;
+        return await this.service.deleteService(id, patientId);
     }
 }

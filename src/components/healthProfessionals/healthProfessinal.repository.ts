@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { UUID } from "crypto";
 import { PrismaService } from "src/infra/database/prisma/prisma.service";
 import { IHealthProfessionalRepository } from "./interfaces/healthProfessional.repository.interface";
 import * as bcrypt from 'bcrypt';
 @Injectable()
 export class HealthProfessionalRepository implements IHealthProfessionalRepository {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(private readonly prisma: PrismaService) { }
 
     async generateFinancialReport(data: any): Promise<any> {
         const { hospitalUnityId } = data;
@@ -66,10 +66,15 @@ export class HealthProfessionalRepository implements IHealthProfessionalReposito
         }
     }
 
-    async updateHealthProfessional(id: UUID, data: any): Promise<any> {
+    async updateHealthProfessional(id: UUID, data: any, healthProfessionalId: string): Promise<any> {
         const { name, cpf, password, isAdmin, hospitalUnitId, serviceType, professionalType } = data;
 
         try {
+
+            if (id !== healthProfessionalId) {
+                throw new BadRequestException('Você não tem permissão para editar este perfil.');
+            }
+
             const updateData: any = {
                 name,
                 cpf,
@@ -94,8 +99,12 @@ export class HealthProfessionalRepository implements IHealthProfessionalReposito
         }
     }
 
-    async deleteHealthProfessional(id: UUID): Promise<any> {
+    async deleteHealthProfessional(id: UUID, healthProfessionalId: string): Promise<any> {
         try {
+            if (id !== healthProfessionalId) {
+                throw new BadRequestException('Você não tem permissão para editar este perfil.');
+            }
+
             return await this.prisma.healthProfessional.delete({
                 where: {
                     id,

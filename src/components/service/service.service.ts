@@ -36,7 +36,7 @@ export class ServiceService {
         return await this.repository.updateService(id, data, patientId);
     }
 
-    async deleteService(id: UUID): Promise<any> {
-        return await this.repository.deleteService(id);
+    async deleteService(id: UUID, patientId: UUID): Promise<any> {
+        return await this.repository.deleteService(id, patientId);
     }
 }

@@ -32,6 +32,7 @@ export class AuthService {
       sub: user.id,
       cpf: user.cpf,
       isAdmin: user.isAdmin,
+      professionalType: user.professionalType,
     };
 
     return {

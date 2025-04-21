@@ -19,11 +19,11 @@ export class HealthProfessionalService {
         return await this.repository.createHealthProfessional(data);
     }
 
-    async updateHealthProfessional(id: UUID, data: any): Promise<any> {
-        return await this.repository.updateHealthProfessional(id, data);
+    async updateHealthProfessional(id: UUID, data: any, healthProfessionalId: UUID): Promise<any> {
+        return await this.repository.updateHealthProfessional(id, data, healthProfessionalId);
     }
 
-    async deleteHealthProfessional(id: UUID): Promise<any> {
-        return await this.repository.deleteHealthProfessional(id);
+    async deleteHealthProfessional(id: UUID, healthProfessionalId: UUID): Promise<any> {
+        return await this.repository.deleteHealthProfessional(id, healthProfessionalId);
     }
 }

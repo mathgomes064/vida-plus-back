@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@nestjs/common';
 
 @Injectable()
-export class IsAdminGuard implements CanActivate {
+export class IsProfessionalGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
@@ -10,8 +10,8 @@ export class IsAdminGuard implements CanActivate {
       throw new ForbiddenException('Acesso negado. Usuário não autenticado.');
     }
 
-    if (!user.isAdmin) {
-      throw new ForbiddenException('Acesso negado. Permissões administrativas necessárias.');
+    if (user.professionalType === undefined) {
+      throw new ForbiddenException('Acesso negado. Apenas profissionais de saúde');
     }
 
     return true;

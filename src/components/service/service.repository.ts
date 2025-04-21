@@ -100,8 +100,21 @@ export class ServiceRepository implements IServiceRepository {
   }
 
 
-  async deleteService(id: UUID): Promise<any> {
+  async deleteService(id: UUID, patientId: string): Promise<any> {
     try {
+      const existingService = await this.prisma.service.findUnique({
+        where: { id },
+        select: { patientId: true },
+      });
+  
+      if (!existingService) {
+        throw new BadRequestException('Serviço não encontrado.');
+      }
+  
+      if (existingService.patientId !== patientId) {
+        throw new BadRequestException('Você não tem permissão para editar este serviço.');
+      }
+
       return await this.prisma.service.delete({
         where: {
           id,
